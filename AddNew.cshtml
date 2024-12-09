@@ -1,0 +1,556 @@
+﻿@model EmployeWebApp.Models.EMPLOYEE
+@{
+    ViewBag.Title = "Employee - Add New";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    span.selection {
+        width: 100%;
+    }
+    .select2-container .select2-selection--single {
+        height: 38px ;
+        line-height: 38px;
+        padding: 0 10px ;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .select2-container .select2-selection__clear {
+        top: 50% !important;
+        transform: translateY(-10%) !important; 
+    }
+
+    .select2-container .select2-selection__arrow {
+        height: 38px;
+        top: 50% !important;
+        transform: translateY(-50%) !important; 
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: lightgray;
+    }
+
+    .form-control::placeholder {
+        color: gray; 
+        opacity:0.7;
+    }
+
+    body {
+        background-color: lightgray;
+        padding-bottom: 10px;
+    }
+
+    /*.card-body {
+        padding-top: 30px;
+    }
+
+    .container-fluid {
+        background-color: #f4f4f4;
+        padding-bottom: 10px;
+    }
+
+    .form-switch .form-check-input {
+        width: 40px;
+        height: 20px;
+        border-radius: 30px;
+        position: relative;
+        -webkit-appearance: none;
+        background-color: #ccc;
+        transition: 0.3s;
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: #4caf50;
+    }
+
+    .form-switch .form-check-input:checked::before {
+        left: 20px;
+        background-color: white;
+    }
+
+    .form-switch .form-check-input::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: white;
+        transition: 0.3s;
+    }
+
+    .btn-group {
+        float: right;
+        justify-content: flex-end;
+        gap: 40px;
+    }
+
+    .btn-group .btn {
+        margin: 0;
+    }
+
+    .btn-group .btn-secondary {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .custom-btn {
+        font-size: 16px;
+        padding: 12px 24px width: auto;
+    }*/
+</style>
+
+<body>
+<header class="py-1"></header>
+
+
+<section class="pb-4 pt-4 ">
+    <div class="container-fluid  ">
+        <div class="row">
+            <div class="col-lg-12">
+                @using (@Html.BeginForm("Save", "Employee", FormMethod.Post, new { @class = "edit_form", @id = "EMP_MASTER" }))
+                 {
+                    @Html.HiddenFor(m => m.EMP_ID)
+                    <div class="card">
+                        <div class="card-header border-bottom">
+                            <h3 class="h4 mb-10" style="font-weight: bold;">@ViewBag.Title</h3>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group mb-4">
+                                        <label class="mb-2"><strong>Employee Code <span style="color:red"> *</span></strong></label>
+                                        @Html.TextBoxFor(m => m.EMP_CODE, new { maxlength = 10, @class = "form-control", @autocomplete = "off", placeholder = "Enter Employee Code", onkeypress = "return /^[A-Za-z0-9-]$/.test(event.key) " })
+                                        <label id="EMP_CODE_error" class="error text-danger mb-2" for="Empcode"></label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group mb-4">
+                                        <label class="mb-2"><strong>First Name<span style="color:red"> *</span></strong></label>
+                                        @Html.TextBoxFor(m => m.EMP_FIRST_NAME, new { maxlength = 50, @class = "form-control", @autocomplete = "off", placeholder = "Enter First Name", onkeypress = "return /[a-zA-Z ]/i.test(event.key)" })
+                                        <label id="EMP_FIRST_NAME_error" class="error text-danger mb-2" for="FirstName"></label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Last Name<span style="color:red"> *</span></strong></label>
+                                        @Html.TextBoxFor(m => m.EMP_LAST_NAME, new { maxlength = 50, @class = "form-control", @autocomplete = "off", placeholder = "Enter Last Name", onkeypress = "return /[a-zA-Z ]/i.test(event.key)" })
+                                    <label id="EMP_LAST_NAME_error" class="error text-danger mb-2" for="LastName"></label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Date of Birth<span style="color:red"> *</span></strong></label>
+                                        <div class="input-group date" id="dob_datepicker">
+                                            <span class="input-group-addon input-group-text">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                            <input type="text" name="EMP_DOB" id="EMP_DOB" onchange="SaveDOB(this);" class="form-control" autocomplete="off" placeholder="DD/MM/YYYY">
+                                        </div>
+                                        <label id="dob_error" class="error text-danger mb-2" for="User"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Gender<span style="color:red"> *</span></strong></label>
+                                        @Html.DropDownListFor(m => m.EMP_GENDER, new SelectList(EmployeWebApp.Models.DropdownList.GetDataManager("G"), "Value", "Text"), new { @class = "form-control select2 select2_demo_1" })
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Mail ID<span style="color:red"> *</span></strong></label>
+                                        @Html.TextBoxFor(m => m.EMP_MAIL_ID, new { maxlength = 50, @class = "form-control", @autocomplete = "off", placeholder = "Enter Mail ID" })
+                                        <label id="EMP_MAIL_ID_error" class="error text-danger"></label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Mobile No. <span style="color:red"> *</span></strong></label>
+                                        @Html.TextBoxFor(m => m.EMP_MOBILE_NO, new { maxlength = 16, @class = "form-control", @autocomplete = "off", placeholder = "Enter Mobile No.", onkeypress = "return /[-+0-9 ]/i.test(event.key)" })
+                                        <label id="EMP_MOB_NO_error" class="error text-danger"></label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Address <span style="color:red"> *</span></strong></label>
+                                        @Html.TextAreaFor(m => m.EMP_ADDRESS, new { maxlength = 150, @class = "form-control", placeholder = "Enter Address" })
+                                        <label id="EMP_ADDRESS_error" class="error text-danger"></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Department<span style="color:red"> *</span></strong></label>
+                                        @Html.DropDownListFor(m => m.EMP_DEPARTMENT, new SelectList(EmployeWebApp.Models.DropdownList.GetDepartment(), "Value", "Text"), new { @class = "form-control select2 select2_demo_2" })
+                                        @*<label id="EMP_DEPARTMENT_error" class="error text-danger"></label>*@
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label class="mb-2"><strong>Designation<span style="color:red"> *</span></strong></label>
+                                        @Html.DropDownListFor(m => m.EMP_DESIGNATION, new SelectList(EmployeWebApp.Models.DropdownList.GetDesignation(), "Value", "Text", Model.EMP_DESIGNATION), new { @class = "form-control select2 select2_demo_3" })
+                                    </div>
+                                </div>
+
+
+                                @*<div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label><strong>Status <span style="color:red"> *</span></strong></label>
+                                                <div class="form-switch">
+                                                  @Html.CheckBoxFor(m => m.status, new { @class = "data-toggle", @type = "checkbox" })
+                                                </div>
+                                            </div>
+                                    </div>*@
+                            </div>
+                        </div><br/><br />
+
+                        <hr />
+
+                        <div class="row pb-3 " >
+                            <div class="col-sm-12 ">
+                                <div class="btn-group" role="group" style="float: right;justify-content:flex-end;gap: 20px">
+                                    <input type="button" id="btnSave" name="btnSave" value="Save" class="btn btn-success" />
+                                    <a href="~/Employee/Index" data-whatever="~/Employee/Index" id="btnClose" class="btn btn-secondary" color="grey" style="margin-right: 10px;">Close</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  }
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js"></script>
+
+<script src="~/Content/js/select2.min.js"></script>
+
+<script src="~/Content/js/bootstrap-datepicker.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".select2_demo_1").select2({
+            placeholder: "Select Gender",
+            allowClear: true
+        });
+
+        $(".select2_demo_2").select2({
+            placeholder: "Select Department",
+            allowClear: true
+        });
+
+        $(".select2_demo_3").select2({
+            placeholder: "Select Designation",
+            allowClear: true
+        });
+
+        $("#EMP_MASTER").validate({
+            ignore: 'input[type=hidden]',
+            rules: {
+                'EMP_CODE': {
+                    required: true
+                },
+                'EMP_FIRST_NAME': {
+                    required: true
+                },
+                'EMP_LAST_NAME': {
+                    required: true
+                },
+                'EMP_DOB': {
+                    required: true
+                },
+                'EMP_GENDER': {
+                    required: true
+                },
+                'EMP_MAIL_ID': {
+                    required: true
+                },
+                'EMP_MOBILE_NO': {
+                    required: true
+                },
+                'EMP_ADDRESS': {
+                    required: true
+                },
+                'EMP_DEPARTMENT': {
+                    required: true
+                },
+                'EMP_DESIGNATION': {
+                    required: true
+                }
+            },
+            messages: {
+                'EMP_CODE': {
+                    required: 'Employee Code must be entered.'
+                },
+                'EMP_FIRST_NAME': {
+                    required: 'First Name must be entered.'
+                },
+                'EMP_LAST_NAME': {
+                    required: 'Last Name must be entered.'
+                },
+                'EMP_DOB': {
+                    required: 'Date Of Birth must be selected.'
+                },
+                'EMP_GENDER': {
+                    required: 'Gender must be selected.'
+                },
+                'EMP_MAIL_ID': {
+                    required: 'Mail ID must be entered.'
+                },
+                'EMP_MOBILE_NO': {
+                    required: 'Mobile Number must be entered.'
+                },
+                'EMP_ADDRESS': {
+                    required: 'Address must be entered.'
+                },
+                'EMP_DEPARTMENT': {
+                    required: 'Department must be selected.'
+                },
+                'EMP_DESIGNATION': {
+                    required: 'Designation must be selected.'
+                }
+            },
+            errorPlacement: function (error, element) {
+                
+                if (element.attr("name") == "EMP_DEPARTMENT" || element.attr("name") == "EMP_DESIGNATION" || element.attr("name") === "EMP_GENDER") {
+                    error.insertAfter(element.parent()); 
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+            errorClass: 'text-danger' 
+        });
+
+        $("#btnSave").on('click', function () {
+
+            @*var preStatus = '@Model.status';*@
+            var curStatus = $('#EMP_STATUS').is(':checked') ? "true" : "false";
+
+            if ($("#EMP_MASTER").valid()) {
+                var error = $(".error").text();
+                if (error == "") {
+                    $("#EMP_MASTER").submit();
+                }
+            }
+        });
+
+        $("#btnClose").on('click', function () {
+            $("#loading").show();
+        });
+
+        $("#EMP_MOBILE_NO").on('blur', function () {
+            MobileNum();
+        });
+
+        $("#EMP_CODE").on('blur', function () {
+            var Empcode = $('#EMP_CODE').val();
+            var Empcodetrim = Empcode.trim();
+            var Empcodelength = Empcode.length;
+            if (Empcodelength > 0 && Empcodetrim == "") {
+                $('#EMP_CODE_error').css('display', 'block').text("Employee code must be entered.");
+                $("#EMP_CODE").val("");
+            } else if (Empcodelength > 6) {
+                $('#EMP_CODE_error').css('display', 'block').text("Please enter valid employee code.");
+            }
+            else {
+                $('#EMP_CODE_error').css('display', 'none');
+            }
+            $('#EMP_CODE').val(Empcodetrim);
+        });
+
+        $("#EMP_CODE").on('focus', function () {
+            $('#EMP_CODE_error').text("");
+        });
+
+        $("#EMP_FIRST_NAME").on('blur', function () {
+            var FirstName = $('#EMP_FIRST_NAME').val();
+            var Firstnametrim = FirstName.trim();
+            var Firstnamelength = FirstName.length;
+            if (Firstnamelength > 0 && Firstnametrim == "") {
+                $('#EMP_FIRST_NAME_error').css('display', 'block').text("First Name must be entered.");
+                $("#EMP_FIRST_NAME").val("");
+            }
+            else {
+                $('#EMP_FIRST_NAME_error').css('display', 'none');
+            }
+            $('#EMP_FIRST_NAME').val(Firstnametrim);
+        });
+
+        $("#EMP_FIRST_NAME").on('focus', function () {
+            $('#EMP_FIRST_NAME_error').text("");
+        });
+
+        $("#EMP_LAST_NAME").on('blur', function () {
+            var LastName = $('#EMP_LAST_NAME').val();
+            var Lastnametrim = LastName.trim();
+            var Lastnamelength = LastName.length;
+            if (Lastnamelength > 0 && Lastnametrim == "") {
+                $('#EMP_LAST_NAME_error').css('display', 'block').text("Last Name must be entered.");
+                $("#EMP_LAST_NAME").val("");
+            }
+            else {
+                $('#EMP_LAST_NAME_error').css('display', 'none');
+            }
+            $('#EMP_LAST_NAME').val(Lastnametrim);
+        });
+
+        $("#EMP_LAST_NAME").on('focus', function () {
+            $('#EMP_LAST_NAME_error').text("");
+        });
+
+        //$("#EMP_GENDER").on('change', function () {
+        //    //var LastName = $('#EMP_GENDER').val();
+        //    //var Lastnametrim = LastName.trim();
+        //    //var Lastnamelength = LastName.length;
+        //    //if (Lastnamelength > 0 && Lastnametrim == "") {
+        //    $('#EMP_GENDER_error').css('display', 'block').text("Gender must be entered.");
+        //    $("#EMP_GENDER").val("");
+        //    //}
+        //});
+
+        $("#EMP_ADDRESS").on('blur', function () {
+            var Address = $('#EMP_ADDRESS').val();
+            var Addresstrim = Address.trim();
+            var Addresslength = Address.length;
+            if (Addresslength > 0 && Addresstrim == "") {
+                $('#EMP_ADDRESS_error').css('display', 'block').text("Address must be entered.");
+                $("#EMP_ADDRESS").val("");
+            } else if (Addresslength < 20 && Addresslength > 0) {
+                $('#EMP_ADDRESS_error').css('display', 'block').text("Please Address should be minimum of 20 characters.");
+            } else {
+                $('#EMP_ADDRESS_error').css('display', 'none');
+            }
+
+            $("#EMP_ADDRESS").val(Addresstrim);
+        });
+
+        $("#EMP_ADDRESS").on('focus', function () {
+            $('#EMP_ADDRESS_error').text("");
+        });
+
+        function MobileNum() {
+            var MobileNo = $('#EMP_MOBILE_NO').val();
+            var MobileNotrim = MobileNo.trim();
+            var MobileNolength = MobileNo.length;
+            if (MobileNolength > 0 && MobileNotrim == "") {
+                $('#EMP_MOB_NO_error').css('display', 'block').text("Mobile must be entered.");
+                $("#EMP_MOBILE_NO").val("");
+            }
+            else if (MobileNolength > 0) {
+                var mobNo = $("#EMP_MOBILE_NO").val().trim();
+                var regex = /^(\+91[\-\s]?)? ?-? ?[6789]\d{9}$/;
+                if (regex.test(mobNo)) {
+                    $('#EMP_MOB_NO_error').css('display', 'none').text("");
+                    $("#EMP_MOBILE_NO").val(mobNo);
+                } else {
+                    $('#EMP_MOB_NO_error').css('display', 'block').text("Please enter valid mobile no.");
+                }
+            } else {
+                $('#EMP_MOB_NO_error').css('display', 'none');
+            }
+
+        }
+
+        $("#EMP_MOBILE_NO").on('focus', function () {
+            $('#EMP_MOB_NO_error').text("");
+        });
+
+
+        $("#EMP_MAIL_ID").on('blur', function () {
+            Email() ;
+        });
+
+        function Email() {
+            var MaileId = $('#EMP_MAIL_ID').val();
+            var MaileIdtrim = MaileId.trim();
+            var MaileIdlength = MaileId.length;
+            if (MaileIdlength > 0 && MaileIdtrim == "") {
+                $('#EMP_MAIL_ID_error').css('display', 'block').text("Mail ID must be entered.");
+                $("#EMP_MAIL_ID").val("");
+            }
+            else if (MaileIdlength > 0) {
+                var MaileIdReg = $("#EMP_MAIL_ID").val().trim();
+                var Eregex = /^[a-zA-Z0-9._%+-]+\@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+                if (Eregex.test(MaileIdReg)) {
+                    $('#EMP_MAIL_IDerror').css('display', 'none').text("");
+                    $("#EMP_MAIL_ID").val(MaileIdReg);
+                } else {
+                    $('#EMP_MAIL_ID_error').css('display', 'block').text("Please enter valid Mail ID.");
+                }
+            } else {
+                $('#EMP_MAIL_ID_error').css('display', 'none');
+            }
+
+        }
+
+            $("#EMP_MAIL_ID").on('focus', function () {
+                $('#EMP_MAIL_ID_error').text("");
+            });             
+
+    });  //on window
+
+    $('#dob_datepicker').datepicker({
+    todayBtn: "linked",
+    format: 'dd/mm/yyyy',
+    endDate: 'today',
+    keyboardNavigation: false,
+    forceParse: false,
+    calendarWeeks: true,
+    autoclose: true,
+    orientation: "bottom",
+});
+
+    function SaveDOB() {
+        var length = $('.IsInValied').length;
+        if (length === 0) {
+            var fdt = $("#EMP_DOB").val();
+
+            if (fdt === "") {
+                $("#EMP_DOB").addClass("error");
+                $("#dob_error").text("Please select a valid date").css("display", "inline-block").css("color", "red");
+                return;
+            }
+
+            var FdateParts = fdt.split('/'); 
+            var myFromDate = new Date(FdateParts[2], FdateParts[1] - 1, FdateParts[0]); 
+
+            var currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (myFromDate >= currentDate) {  
+                $("#EMP_DOB").addClass("error");
+                $("#dob_error").text('Date of Birth must be earlier than the Current Date')
+                    .css("display", "inline-block")
+                    .css("color", "red");
+                $("#EMP_DOB").val(''); 
+                $("#EMP_DOB").focus();
+            } else {
+                $("#EMP_DOB").removeClass("error");
+                $("#dob_error").text('');
+
+                var _day = myFromDate.getDate().toString().padStart(2, '0');
+                var _month = (myFromDate.getMonth() + 1).toString().padStart(2, '0');
+                var _year = myFromDate.getFullYear();
+                var formattedDate = `${_day}/${_month}/${_year}`;
+            }
+        }
+    }
+</script>
+</body>
+
+

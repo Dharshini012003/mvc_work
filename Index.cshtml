@@ -1,0 +1,193 @@
+﻿@model List<EmployeWebApp.Models.EMPLOYEE>
+@{
+    ViewBag.Title = "Index";
+}
+<html>
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        table, th, td {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #afdbcc;
+        }
+
+        th {
+            color: white;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        #header {
+            margin-top: 0px;
+            background-color: cadetblue;
+        }
+
+        h1 {
+            font-weight: bold;
+        }
+
+        .header {
+            background-color: #4c7373;
+            padding-top: 5px;
+            width: 100vw;
+            margin-left: -50px;
+            margin-right: 0px;
+        }
+
+        .header-text {
+            color: white;
+            font-size: 14px;
+            margin: 0px;
+            padding-left: 58px;
+            font-weight: 900;
+            position: relative;
+            top: -7px;
+        }
+
+        .new-button {
+            padding-right: 0px;
+            font-size: 50px;
+        }
+
+        .index-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px;
+        }
+
+        body {
+            margin-top: 0px;
+            padding-top: 0px;
+            padding-left: 0px;
+        }
+
+        .deleteIcon {
+            color: maroon;
+            cursor: pointer;
+        }
+
+        .status-badge {
+            padding: 10px 15px; 
+            display: inline-block; 
+            min-width: 70px; 
+            text-align: center; 
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-text">
+            <h2>Employee Details</h2>
+        </div>
+    </header>
+
+    <div class="index-container">
+        <h1>Index</h1>
+        <div class="new-button">
+            <a href="~/Employee/AddNew/0" class="btn btn-success">Add New</a>
+        </div>
+    </div>
+
+    <table>
+        <tr id="header">
+            <th>S No.</th>
+            <th>Employee Code</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date Of Birth</th>
+            <th>Gender</th>
+            <th>Mail ID</th>
+            <th>Mobile No.</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.EMP_ID</td>
+                <td>@employee.EMP_CODE</td>
+                <td>@employee.EMP_FIRST_NAME</td>
+                <td>@employee.EMP_LAST_NAME</td>
+                <td style="white-space: nowrap;">@employee.EMP_DOB.ToString("dd-MM-yyyy")</td>
+                <td>@employee.EMP_GENDER</td>
+                <td>@employee.EMP_MAIL_ID</td>
+                <td>@employee.EMP_MOBILE_NO</td>
+                <td>@employee.EMP_DEPARTMENT</td>
+                <td>@employee.EMP_DESIGNATION</td>
+                <td style="width:10%">
+                    <center>
+                        @if (@employee.status == true)
+                        {
+                            <span class="badge bg-success staus-badge">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary staus-badge">In-Active</span>
+                        }
+                    </center>
+                </td>
+                <td style="width:10%">
+                    <center>
+                        <a href="~/Employee/AddNew?id=@employee.EMP_ID" title="Edit"><i class="fa fa-pencil-alt editIcon"></i></a> &nbsp;&nbsp;&nbsp;
+                        <a class="deleteAlert" href="~/Employee/DeleteEmp?emp_id=@employee.EMP_ID" title="Delete">
+                            <i class="fa fa-trash deleteIcon"></i>
+                        </a>
+                    </center>
+                </td>
+            </tr>
+        }
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $(".deleteAlert").click(function (e) {
+                e.preventDefault();
+                var link = $(this).attr("href");
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    html: '<span style="color:black;">Do you want to delete?</span>',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete it!',
+                    cancelButtonText: 'No, cancel please!',
+                    reverseButtons: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (link) {
+                            window.location.href = link;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
